@@ -15,14 +15,14 @@ struct Currency: Identifiable {
     let name: String    // the actual name
 }
 
-func getCurrencyList(completion: @escaping ([Currency]) -> Void) {
+func getCurrencyList(completion: @escaping ([Currency]) -> Void) { // pulls all currencies
     URLSession.shared.dataTask(with: currencyListURL!) { data, response, error in
         var result: [Currency] = []
         
         if let data = data {
             if let dict = try? JSONDecoder().decode([String: String].self, from: data) {
                 for (key, value) in dict {
-                    if !value.isEmpty {
+                    if !value.isEmpty { // ignores currencies with just the currencyCode
                         result.append(Currency(id: key, name: value))
                     }
                 }
@@ -34,4 +34,5 @@ func getCurrencyList(completion: @escaping ([Currency]) -> Void) {
         completion(result)
     }.resume()
 }
+
 
