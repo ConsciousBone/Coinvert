@@ -15,6 +15,9 @@ struct ConversionView: View {
     @State private var baseCurrency = ""
     @State private var wantedCurrency = ""
     
+    @State private var baseHolding = "" // holds the baseCurrency for swapping
+                                        // yes theres better ways but its like 11pm
+    
     @State private var baseCurrencyAmount: Double? = nil
     @State private var convertedAmount: Double? = nil
     
@@ -23,6 +26,31 @@ struct ConversionView: View {
     }
     var wantedCurrencyFullName: String {
         currencyList.first(where: { $0.id == wantedCurrency })?.name ?? "Unknown"
+    }
+    
+    func convert() {
+        print("auto converting! from \(baseCurrency) to \(wantedCurrency)")
+        
+        guard let amount = baseCurrencyAmount else {
+            print("No amount entered")
+            convertedAmount = nil
+            return
+        }
+        
+        convertCurrency(
+            base: baseCurrency,
+            wanted: wantedCurrency,
+            amount: amount)
+        { converted in
+            DispatchQueue.main.async {
+                if let converted = converted {
+                    self.convertedAmount = converted
+                    print("converted amount: \(converted)")
+                } else {
+                    print("conversion failed") // error somehow
+                }
+            }
+        }
     }
     
     var body: some View {
@@ -35,6 +63,18 @@ struct ConversionView: View {
                         }
                     }
                     .pickerStyle(.menu)
+                    
+                    Button {
+                        print("swapping currencies")
+                        baseHolding = baseCurrency // ew bad code ew ew
+                        baseCurrency = wantedCurrency
+                        wantedCurrency = baseHolding
+                        
+                        convert() // why not
+                    } label: {
+                        Label("Swap", systemImage: "arrow.trianglehead.2.counterclockwise.rotate.90")
+                    }
+                    
                     Picker("Convert To", selection: $wantedCurrency) { // wanted
                         ForEach(currencyList) { currency in
                             Text(currency.name).tag(currency.id)
@@ -48,28 +88,14 @@ struct ConversionView: View {
                     TextField("1.00", value: $baseCurrencyAmount, format: .number)
                         .keyboardType(.decimalPad) // stops text being entered
                         .focused($isInputActive) // lets us show the done button in toolbar
+                        .onChange(of: baseCurrencyAmount) { _, _ in
+                            convert()
+                        }
                 }
                 
                 Section {
                     Button {
-                        print("converting! from \(baseCurrency) to \(wantedCurrency)")
-                        guard let amount = baseCurrencyAmount else {
-                            print("No amount entered")
-                            return
-                        }
-                        convertCurrency(
-                            base: baseCurrency,
-                            wanted: wantedCurrency,
-                            amount: amount) { converted in
-                                DispatchQueue.main.async {
-                                    if let converted = converted {
-                                        self.convertedAmount = converted
-                                        print("converted amount: \(converted)")
-                                    } else {
-                                        print("conversion failed") // error somehow
-                                    }
-                                }
-                            }
+                        convert()
                     } label: {
                         Label("Convert", systemImage: "shuffle")
                             .labelStyle(.titleAndIcon) // looks better imo
@@ -81,7 +107,7 @@ struct ConversionView: View {
                     if let converted = convertedAmount {
                         Text(converted, format: .number)
                     } else {
-                        Text("0.00")
+                        Text("0.00") // placeholder
                     }
                 }
             }
