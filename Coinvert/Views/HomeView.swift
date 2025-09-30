@@ -8,8 +8,29 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var currencyList: [Currency] = []
+    @State private var baseCurrency = ""
+    
     var body: some View {
-        Text("Home view")
+        Form {
+            Section {
+                Picker("Base currency", selection: $baseCurrency) {
+                    ForEach(currencyList) { currency in
+                        Text(currency.name)
+                    }
+                }
+            }
+        }
+        .onAppear {
+            getCurrencyList { list in
+                DispatchQueue.main.async {
+                    self.currencyList = list
+                    if self.baseCurrency.isEmpty, let first = list.first {
+                        self.baseCurrency = first.id
+                    }
+                }
+            }
+        }
     }
 }
 

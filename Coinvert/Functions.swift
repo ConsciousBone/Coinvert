@@ -15,14 +15,9 @@ struct Currency: Identifiable {
     let name: String    // the actual name
 }
 
-func getCurrencies(completion: @escaping (Result<[Currency], Error>) -> Void) {
+func getCurrencyList(completion: @escaping ([Currency]) -> Void) {
     URLSession.shared.dataTask(with: currencyListURL!) { data, response, error in
         var result: [Currency] = []
-        
-        if let error = error {
-            completion(.failure(error))
-            return
-        }
         
         if let data = data {
             if let dict = try? JSONDecoder().decode([String: String].self, from: data) {
@@ -32,11 +27,11 @@ func getCurrencies(completion: @escaping (Result<[Currency], Error>) -> Void) {
                     }
                 }
                 
-                result.sort {$0.name < $1.name}
+                result.sort {$0.name < $1.name} // alphabetical ordering
             }
         }
         
-        completion(.success(result))
+        completion(result)
     }.resume()
 }
 
