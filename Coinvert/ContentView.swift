@@ -10,8 +10,8 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            Tab("Home", systemImage: "house") {
-                HomeView()
+            Tab("Conversion", systemImage: "shuffle") {
+                ConversionView()
             }
             Tab("Values", systemImage: "dollarsign") {
                 ValueView()
