@@ -46,4 +46,20 @@ func convertCurrency(
         completion(nil)
         return
     }
+    
+    URLSession.shared.dataTask(with: url) { data, response, error in
+        var result: Double? = nil
+        
+        if let data = data {
+            if let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                if let baseDict = dict[base] as? [String: Double] {
+                    if let rate = baseDict[wanted] {
+                        result = amount * rate
+                    }
+                }
+            }
+        }
+        
+        completion(result)
+    }.resume()
 }
