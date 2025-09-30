@@ -35,4 +35,15 @@ func getCurrencyList(completion: @escaping ([Currency]) -> Void) { // pulls all 
     }.resume()
 }
 
-
+func convertCurrency(
+    base: String,
+    wanted: String,
+    amount: Double,
+    completion: @escaping (Double?) -> Void
+) {
+    let urlString = apiURL + "/currencies/\(base).json"
+    guard let url = URL(string: urlString) else {
+        completion(nil)
+        return
+    }
+}
