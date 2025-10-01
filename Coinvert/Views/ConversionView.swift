@@ -5,6 +5,8 @@
 //  Created by Evan Plant on 30/09/2025.
 //
 
+// waa waaaa bad code, its not lazy its just being efficient
+
 import SwiftUI
 
 struct ConversionView: View {
@@ -12,8 +14,8 @@ struct ConversionView: View {
     
     @State private var currencyList: [Currency] = []
     
-    @State private var baseCurrency = ""
-    @State private var wantedCurrency = ""
+    @State private var baseCurrency = "" // "Base Currency", duh
+    @State private var wantedCurrency = "" // "Convert To"
     
     @State private var baseHolding = "" // holds the baseCurrency for swapping
                                         // yes theres better ways but its like 11pm
@@ -53,6 +55,27 @@ struct ConversionView: View {
         }
     }
     
+    func loadCurrencies() { // fetch list of currencies and give it to a var
+        currencyList = [] // clear out any existing currencies
+        
+        getCurrencyList { list in
+            DispatchQueue.main.async {
+                self.currencyList = list
+                if self.baseCurrency.isEmpty, let first = list.first {
+                    self.baseCurrency = first.id // pick first
+                }
+                
+                if self.wantedCurrency.isEmpty {
+                    if list.count > 1 { // check if more than one currency
+                        self.wantedCurrency = list[1].id // pick the second
+                    } else if let first = list.first {
+                        self.wantedCurrency = first.id // fall back to first
+                    }
+                }
+            }
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -72,7 +95,7 @@ struct ConversionView: View {
                         
                         convert() // why not
                     } label: {
-                        Label("Swap", systemImage: "arrow.trianglehead.2.counterclockwise.rotate.90")
+                        Label("Swap", systemImage: "shuffle")
                     }
                     
                     Picker("Convert To", selection: $wantedCurrency) { // wanted
@@ -93,14 +116,14 @@ struct ConversionView: View {
                         }
                 }
                 
-                Section {
-                    Button {
-                        convert()
-                    } label: {
-                        Label("Convert", systemImage: "shuffle")
-                            .labelStyle(.titleAndIcon) // looks better imo
-                    }
-                }
+               // Section { // convert button, kinda redundant from auto convert
+               //     Button {
+               //         convert()
+               //     } label: {
+               //         Label("Convert", systemImage: "shuffle")
+               //             .labelStyle(.titleAndIcon) // looks better imo
+               //     }
+               // }
                 
                 Section { // wanted amount
                     Text("Amount in \(wantedCurrencyFullName):")
@@ -111,27 +134,11 @@ struct ConversionView: View {
                     }
                 }
             }
-            .onAppear { // fetch list of currencies and give it to a var
-                getCurrencyList { list in
-                    DispatchQueue.main.async {
-                        self.currencyList = list
-                        if self.baseCurrency.isEmpty, let first = list.first {
-                            self.baseCurrency = first.id // pick first
-                        }
-                        
-                        if self.wantedCurrency.isEmpty {
-                            if list.count > 1 { // check if more than one currency
-                                self.wantedCurrency = list[1].id // pick the second
-                            } else if let first = list.first {
-                                self.wantedCurrency = first.id // fall back to first
-                            }
-                        }
-                    }
-                }
+            .onAppear { // get currency list
+                loadCurrencies()
             }
             .toolbar {
-                ToolbarItem(placement: .keyboard) { // dismiss button
-                                                    // idfk how to do it better so deal with it
+                ToolbarItem(placement: .keyboard) { // dismiss button, idfk how to do it better so deal with it
                     Button {
                         isInputActive = false
                     } label: {
@@ -140,8 +147,17 @@ struct ConversionView: View {
                     }
                     .padding()
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        print("refreshing currency list")
+                        loadCurrencies()
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.trianglehead.2.counterclockwise.rotate.90")
+                    }
+                }
             }
             .navigationTitle("Conversion")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
