@@ -13,7 +13,7 @@ struct Rate: Identifiable {
     let rate: Double    // currency exchange rate, duh
 }
 
-struct ValueView: View {
+struct RatesView: View {
     @State private var currencyList: [Currency] = []
     @State private var ratesList: [Rate] = []
     
@@ -78,5 +78,5 @@ struct ValueView: View {
 }
 
 #Preview {
-    ValueView()
+    RatesView()
 }

@@ -13,8 +13,8 @@ struct ContentView: View {
             Tab("Conversion", systemImage: "shuffle") {
                 ConversionView()
             }
-            Tab("Values", systemImage: "dollarsign") {
-                ValueView()
+            Tab("Rates", systemImage: "dollarsign") {
+                RatesView()
             }
             Tab("Settings", systemImage: "gear") {
                 SettingsView()
