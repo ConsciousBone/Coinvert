@@ -104,6 +104,7 @@ struct ConversionView: View {
                         }
                     }
                     .pickerStyle(.menu)
+                    // TODO: have it auto convert when this changes
                 }
                 
                 Section { // base amount
