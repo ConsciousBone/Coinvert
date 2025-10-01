@@ -51,7 +51,7 @@ func convertCurrency(
         var result: Double? = nil
         
         if let data = data {
-            if let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            if let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] { // parse json
                 if let baseDict = dict[base] as? [String: Double] {
                     if let rate = baseDict[wanted] {
                         result = amount * rate
@@ -60,6 +60,23 @@ func convertCurrency(
             }
         }
         
+        completion(result)
+    }.resume()
+}
+
+func fetchRates(base: String, completion: @escaping ([String: Double]) -> Void) { // for the conversion table in ValueView
+    let url = URL(string: apiURL + "/currencies/\(base).json")!
+    
+    URLSession.shared.dataTask(with: url) {data, response, error in
+        var result: [String: Double] = [:] // make blank dictionary
+        
+        if let data = data {
+            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] { // parse json
+                if let baseDict = json[base] as? [String: Double] {
+                    result = baseDict
+                }
+            }
+        }
         completion(result)
     }.resume()
 }
