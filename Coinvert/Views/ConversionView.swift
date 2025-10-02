@@ -86,6 +86,9 @@ struct ConversionView: View {
                         }
                     }
                     .pickerStyle(.menu)
+                    .onChange(of: baseCurrency) {
+                        convert()
+                    }
                     
                     Button {
                         print("swapping currencies")
@@ -104,7 +107,9 @@ struct ConversionView: View {
                         }
                     }
                     .pickerStyle(.menu)
-                    // TODO: have it auto convert when this changes
+                    .onChange(of: wantedCurrency) {
+                        convert()
+                    }
                 }
                 
                 Section { // base amount
@@ -112,7 +117,7 @@ struct ConversionView: View {
                     TextField("1.00", value: $baseCurrencyAmount, format: .number)
                         .keyboardType(.decimalPad) // stops text being entered
                         .focused($isInputActive) // lets us show the done button in toolbar
-                        .onChange(of: baseCurrencyAmount) { _, _ in
+                        .onChange(of: baseCurrencyAmount) {
                             convert()
                         }
                 }
@@ -153,7 +158,7 @@ struct ConversionView: View {
                         print("refreshing currency list")
                         loadCurrencies()
                     } label: {
-                        Label("Refresh", systemImage: "arrow.trianglehead.2.counterclockwise.rotate.90")
+                        Label("Reload Currencies", systemImage: "arrow.trianglehead.2.counterclockwise.rotate.90")
                     }
                 }
             }

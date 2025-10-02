@@ -5,6 +5,9 @@
 //  Created by Evan Plant on 30/09/2025.
 //
 
+// this file is the definition ofwhy you dont let
+// a frontend dev work on backend :D
+
 import Foundation
 
 private let apiURL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1"
