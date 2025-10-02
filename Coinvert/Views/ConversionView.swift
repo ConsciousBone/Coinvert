@@ -58,7 +58,9 @@ struct ConversionView: View {
     }
     
     func loadCurrencies() { // fetch list of currencies and give it to a var
-        loadingCurrencies = true // show loading banner
+        withAnimation { // fancy animation maybe?
+            loadingCurrencies = true // show loading banner
+        }
         print("loading currencies")
         
         currencyList = [] // clear out any existing currencies
@@ -80,7 +82,9 @@ struct ConversionView: View {
                 
                 // this is here cos the async shit finishes after
                 // the loadCurrencies() func does
-                loadingCurrencies = false // hide the loading banner
+                withAnimation {
+                    loadingCurrencies = false // hide the loading banner
+                }
                 print("finished loading currencies")
             }
         }
@@ -89,11 +93,12 @@ struct ConversionView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section { // currencies
-                    if loadingCurrencies {
+                if loadingCurrencies {
+                    Section {
                         Text("Loading currency list...")
                     }
-                    
+                }
+                Section { // currencies
                     Picker("Base Currency", selection: $baseCurrency) { // base
                         ForEach(currencyList) { currency in
                             Text(currency.name).tag(currency.id)
