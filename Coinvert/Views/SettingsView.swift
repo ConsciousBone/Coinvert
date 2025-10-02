@@ -15,24 +15,28 @@ struct SettingsView: View {
     @AppStorage("selectedAccentIndex") private var selectedAccentIndex = 4
     
     var body: some View {
-        Form {
-            Section { // default currencies
-                Picker("Base", selection: $defaultBaseCurrency) {
-                    // TODO: fill this with actual data
+        NavigationStack {
+            Form {
+                Section { // default currencies
+                    Picker("Base", selection: $defaultBaseCurrency) {
+                        // TODO: fill this with actual data
+                    }
+                    .pickerStyle(.menu)
+                    
+                    Picker("Convert To", selection: $defaultWantedCurrency) {
+                        // TODO: fill this with actual data
+                    }
+                    .pickerStyle(.menu)
+                } header: {
+                    Text("Default Currencies")
                 }
-                .pickerStyle(.menu)
                 
-                Picker("Convert To", selection: $defaultWantedCurrency) {
-                    // TODO: fill this with actual data
+                Section { // accent
+                    // TODO: accent colour shit
                 }
-                .pickerStyle(.menu)
-            } header: {
-                Text("Default Currencies")
             }
-            
-            Section { // accent
-                // TODO: accent colour shit
-            }
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
