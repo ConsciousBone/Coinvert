@@ -12,6 +12,8 @@ import SwiftUI
 struct ConversionView: View {
     @FocusState var isInputActive: Bool
     
+    @State private var loadingCurrencies = false
+    
     @State private var currencyList: [Currency] = []
     
     @State private var baseCurrency = "" // "Base Currency", duh
@@ -56,6 +58,9 @@ struct ConversionView: View {
     }
     
     func loadCurrencies() { // fetch list of currencies and give it to a var
+        loadingCurrencies = true // show loading banner
+        print("loading currencies")
+        
         currencyList = [] // clear out any existing currencies
         
         getCurrencyList { list in
@@ -72,6 +77,11 @@ struct ConversionView: View {
                         self.wantedCurrency = first.id // fall back to first
                     }
                 }
+                
+                // this is here cos the async shit finishes after
+                // the loadCurrencies() func does
+                loadingCurrencies = false // hide the loading banner
+                print("finished loading currencies")
             }
         }
     }
@@ -80,6 +90,10 @@ struct ConversionView: View {
         NavigationStack {
             Form {
                 Section { // currencies
+                    if loadingCurrencies {
+                        Text("Loading currency list...")
+                    }
+                    
                     Picker("Base Currency", selection: $baseCurrency) { // base
                         ForEach(currencyList) { currency in
                             Text(currency.name).tag(currency.id)
