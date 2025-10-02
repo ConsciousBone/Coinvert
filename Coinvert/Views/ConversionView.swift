@@ -168,7 +168,7 @@ struct ConversionView: View {
                         isInputActive = false
                     } label: {
                         Label("Done", systemImage: "checkmark")
-                            .labelStyle(.titleAndIcon) // looks better
+                            .labelStyle(.titleAndIcon) // looks better, doesnt work tho for some reason TwT
                     }
                     .padding()
                 }
