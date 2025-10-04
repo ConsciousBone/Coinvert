@@ -17,6 +17,8 @@ struct ContentView: View {
         Color.white.gradient,   Color.black.gradient
     ]
     
+    @AppStorage("completedOnboarding") private var completedOnboarding = false
+    
     var body: some View {
         TabView {
             Tab("Conversion", systemImage: "shuffle") {

@@ -31,6 +31,9 @@ struct ConversionView: View {
     
     @State private var showingFavouritesSheet = false
     
+    @AppStorage("precisionMode") private var precisionMode = false
+    @AppStorage("decimalPlaces") private var decimalPlaces: Double = 2
+    
     var baseCurrencyFullName: String {
         currencyList.first(where: { $0.id == baseCurrency })?.name ?? "Unknown"
     }
@@ -163,7 +166,11 @@ struct ConversionView: View {
                 Section { // wanted amount
                     Text("Amount in \(wantedCurrencyFullName):")
                     if let converted = convertedAmount {
-                        Text(converted, format: .number)
+                        if precisionMode {
+                            Text(converted, format: .number)
+                        } else {
+                            Text(String(format: "%.\(Int(decimalPlaces))f", converted))
+                        }
                     } else {
                         Text("0.00") // placeholder
                     }
@@ -178,7 +185,6 @@ struct ConversionView: View {
                         isInputActive = false
                     } label: {
                         Label("Done", systemImage: "checkmark")
-                            .labelStyle(.titleAndIcon) // looks better, doesnt work tho for some reason TwT
                     }
                     .padding()
                 }
@@ -193,6 +199,7 @@ struct ConversionView: View {
                     Button {
                         print("refreshing currency list")
                         loadCurrencies()
+                        convert() // to be safe
                     } label: {
                         Label("Reload Currencies", systemImage: "arrow.trianglehead.2.counterclockwise.rotate.90")
                     }

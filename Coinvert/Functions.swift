@@ -11,7 +11,7 @@
 import Foundation
 
 private let apiURL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1"
-private let currencyListURL = URL(string: apiURL + "/currencies.json")
+private let currencyListURL = URL(string: apiURL + "/currencies.min.json")
 
 struct Currency: Identifiable {
     let id: String      // the 3 character short thing (currencyCode)
@@ -82,4 +82,16 @@ func fetchRates(base: String, completion: @escaping ([String: Double]) -> Void) 
         }
         completion(result)
     }.resume()
+}
+
+extension Double {
+    var cleanValue: String {
+        let string = String(self)
+        if string.contains(".") {
+            return string.replacingOccurrences(of: "0*$", with: "", options: .regularExpression)
+                         .replacingOccurrences(of: "\\.$", with: "", options: .regularExpression)
+        } else {
+            return string
+        }
+    }
 }

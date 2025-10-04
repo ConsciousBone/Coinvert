@@ -33,7 +33,7 @@ struct SettingsView: View {
     ]
     
     @AppStorage("precisionMode") private var precisionMode = false
-    @AppStorage("decimalPlaces") private var decimalPlaces = 2
+    @AppStorage("decimalPlaces") private var decimalPlaces: Double = 2
     
     func loadCurrencies() { // fetch list of currencies and give it to a var
         withAnimation { // fancy animation maybe?
@@ -107,6 +107,28 @@ struct SettingsView: View {
                     } label: {
                         Label("Accent Colour", systemImage: "paintpalette")
                             .labelStyle(.titleOnly) // icon doesnt fit the theme
+                    }
+                }
+                
+                Section { // precision + decimals
+                    Toggle("Precision Mode", isOn: $precisionMode)
+                    if !precisionMode {
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text("Maximum Decimal Places")
+                                Spacer()
+                                Text("\(Int(decimalPlaces))")
+                                    .foregroundStyle(.secondary)
+                            }
+                            Slider(
+                                value: $decimalPlaces,
+                                in: 2...10,
+                                step: 1,
+                                minimumValueLabel: Text("2"),
+                                maximumValueLabel: Text("10"),
+                                label: {Text("Maximum Decimal Places")}
+                            )
+                        }
                     }
                 }
             }
