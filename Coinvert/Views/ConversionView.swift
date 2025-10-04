@@ -19,6 +19,10 @@ struct ConversionView: View {
     @State private var baseCurrency = "" // "Base Currency", duh
     @State private var wantedCurrency = "" // "Convert To"
     
+    // default currencies, these will set the base and convert to automatically
+    @AppStorage("defaultBaseCurrency") private var defaultBaseCurrency = ""
+    @AppStorage("defaultWantedCurrency") private var defaultWantedCurrency = ""
+    
     @State private var baseHolding = "" // holds the baseCurrency for swapping
                                         // yes theres better ways but its like 11pm
     
@@ -68,11 +72,15 @@ struct ConversionView: View {
         getCurrencyList { list in
             DispatchQueue.main.async {
                 self.currencyList = list
-                if self.baseCurrency.isEmpty, let first = list.first {
+                if self.defaultBaseCurrency.isEmpty == false {
+                    self.baseCurrency = self.defaultBaseCurrency // use user's default
+                } else if self.baseCurrency.isEmpty, let first = list.first {
                     self.baseCurrency = first.id // pick first
                 }
                 
-                if self.wantedCurrency.isEmpty {
+                if self.defaultWantedCurrency.isEmpty == false {
+                    self.wantedCurrency = self.defaultWantedCurrency // use user's default
+                } else if self.wantedCurrency.isEmpty {
                     if list.count > 1 { // check if more than one currency
                         self.wantedCurrency = list[1].id // pick the second
                     } else if let first = list.first {
