@@ -14,6 +14,6 @@ struct CoinvertApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [FavouriteItem.self])
+        .modelContainer(for: [FavouriteItem.self]) // swiftdata shit
     }
 }

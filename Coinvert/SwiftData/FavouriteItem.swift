@@ -9,16 +9,16 @@ import Foundation
 import SwiftData
 
 @Model class FavouriteItem {
-    var base: String = ""
-    var wanted: String = ""
-    var displayMode: Int = 0 // 0 is base + want, 1 is base, 2 is want
-    var date: Date
-    var id = UUID()
+    var title: String = "" // name of fav
+    var base: String = "" // base currency obviously, currencyCode format
+    var wanted: String = "" // convert to, currencyCode format
+    var date: Date // for sorting purposes
+    var id = UUID() // good practice i guess??
     
-    init(base: String = "", wanted: String = "", displayMode: Int = 0, date: Date = .now, id: UUID = UUID()) {
+    init(title: String = "", base: String = "", wanted: String = "", date: Date = .now, id: UUID = UUID()) {
+        self.title = title
         self.base = base
         self.wanted = wanted
-        self.displayMode = displayMode
         self.date = date
         self.id = id
     }

@@ -19,7 +19,11 @@ struct FavouritesView: View {
         NavigationStack {
             Form {
                 Section {
-                    Text("testing!")
+                    FavouriteRowItemView(
+                        title: .constant("USD to GBP"),
+                        baseCurrency: .constant("usd"),
+                        wantedCurrency: .constant("gbp")
+                    )
                 }
             }
             .toolbar {
