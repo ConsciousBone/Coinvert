@@ -2,7 +2,8 @@
 **A simple currency converter for iOS devices. Made for Hack Club's Siege week 5.**
 
 <img src="/Image1.PNG" width=128> <img src="/Image2.PNG" width=128>
-<img src="/Image3.PNG" width=128> <img src="/Image4.PNG" width=128>
+<img src="/Image3.PNG" width=128> <img src="/Image4.PNG" width=128>  
+[Video demo (YouTube)](https://youtu.be/hs479mZpb-w)
 ## Description
 Coinvert is an extremely simple currency converter for iPhone and iPad, as well as Mac and Apple Vision Pro using Apple's *Designed for iPad* feature!  
 It supports over 200 currencies, including some cryptocurrencies.
