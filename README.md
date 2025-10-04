@@ -12,7 +12,7 @@ It supports over 200 currencies, including some cryptocurrencies.
 This guide only covers iPhone, iPad, and Apple Silicon Macs; if you want to use this on an Apple Vision Pro, you're on your own.
 1. Download [Sideloadly](https://sideloadly.io/#download) and its requirements (Macs have none, Windows machines need iTunes and iCloud **not from the Microsoft Store**) so you can sideload the IPA file onto your iPhone/iPad.  
 (I would've put this on the App Store or on TestFlight, but App Review would not approve it before the end of Week 5, they're kinda slow.)
-2. Go to the *Releases* page on GitHub. This is on the right of this README on desktop, and at the bottom of the page on mobile.
+2. Go to the [*Releases*](https://github.com/ConsciousBone/Coinvert/releases/tag/stable) page on GitHub. This is on the right of this README on desktop, and at the bottom of the page on mobile.
 3. Find the latest release (should be the first one that shows up) and download the `Coinvert.ipa` file.
 4. Open up Sideloadly, click the box with the file icon and `IPA` inside it, then select the `Coinvert.ipa` file you downloaded previously.
 5. Select your iPhone or iPad in the *iDevice* dropdown (you may have to 'trust' your computer before it appears), and put your Apple Account/ID email into the *Apple ID* text box.
