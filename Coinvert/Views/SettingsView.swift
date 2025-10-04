@@ -91,7 +91,7 @@ struct SettingsView: View {
                 }
                 
                 Section { // accent
-                    Picker(selection: $selectedAccentIndex, label: Label("Accent Colour", systemImage: "paintpalette")) {
+                    Picker(selection: $selectedAccentIndex) {
                         ForEach(accentColours.indices, id: \.self) { index in
                             HStack {
                                 Circle()
@@ -101,6 +101,9 @@ struct SettingsView: View {
                             }
                             .tag(index)
                         }
+                    } label: {
+                        Label("Accent Colour", systemImage: "paintpalette")
+                            .labelStyle(.titleOnly) // icon doesnt fit the theme
                     }
                 }
             }

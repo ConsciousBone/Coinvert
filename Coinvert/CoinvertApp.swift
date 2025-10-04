@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct CoinvertApp: App {
@@ -13,5 +14,6 @@ struct CoinvertApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [FavouriteItem.self])
     }
 }

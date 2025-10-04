@@ -12,12 +12,14 @@ import SwiftData
     var base: String = ""
     var wanted: String = ""
     var displayMode: Int = 0 // 0 is base + want, 1 is base, 2 is want
+    var date: Date
     var id = UUID()
     
-    init(base: String = "", wanted: String = "", displayMode: Int = 0, id: UUID = UUID()) {
+    init(base: String = "", wanted: String = "", displayMode: Int = 0, date: Date = .now, id: UUID = UUID()) {
         self.base = base
         self.wanted = wanted
         self.displayMode = displayMode
+        self.date = date
         self.id = id
     }
 }

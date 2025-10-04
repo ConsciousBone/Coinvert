@@ -29,6 +29,8 @@ struct ConversionView: View {
     @State private var baseCurrencyAmount: Double? = nil
     @State private var convertedAmount: Double? = nil
     
+    @State private var showingFavouritesSheet = false
+    
     var baseCurrencyFullName: String {
         currencyList.first(where: { $0.id == baseCurrency })?.name ?? "Unknown"
     }
@@ -180,6 +182,13 @@ struct ConversionView: View {
                     }
                     .padding()
                 }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        showingFavouritesSheet.toggle()
+                    } label: {
+                        Label("Favourites", systemImage: "star")
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         print("refreshing currency list")
@@ -188,6 +197,10 @@ struct ConversionView: View {
                         Label("Reload Currencies", systemImage: "arrow.trianglehead.2.counterclockwise.rotate.90")
                     }
                 }
+            }
+            .sheet(isPresented: $showingFavouritesSheet) {
+                FavouritesView(mode: .constant(0))
+                    .presentationDetents([.medium])
             }
             .navigationTitle("Conversion")
             .navigationBarTitleDisplayMode(.inline)
