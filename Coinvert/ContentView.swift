@@ -17,7 +17,7 @@ struct ContentView: View {
         Color.white.gradient,   Color.black.gradient
     ]
     
-    @AppStorage("completedOnboarding") private var completedOnboarding = false
+    @AppStorage("onboardingShowing") private var onboardingShowing = true
     
     var body: some View {
         TabView {
@@ -32,6 +32,10 @@ struct ContentView: View {
             }
         }
         .tint(accentColours[selectedAccentIndex])
+        .sheet(isPresented: $onboardingShowing) {
+            OnboardingView()
+                .presentationDetents([.large])
+        }
     }
 }
 
