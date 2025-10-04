@@ -34,7 +34,9 @@ struct ContentView: View {
         .tint(accentColours[selectedAccentIndex])
         .sheet(isPresented: $onboardingShowing) {
             OnboardingView()
+                .tint(accentColours[selectedAccentIndex])
                 .presentationDetents([.large])
+                .interactiveDismissDisabled(true)
         }
     }
 }

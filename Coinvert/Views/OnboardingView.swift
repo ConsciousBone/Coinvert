@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @AppStorage("onboardingShowing") private var onboardingShowing = true
+    @Environment(\.presentationMode) var presentationMode // lets us dismiss the sheet
     
     @State private var currencyList: [Currency] = []
     
@@ -49,123 +50,141 @@ struct OnboardingView: View {
     }
     
     var body: some View {
-        TabView {
-            Tab {
-                VStack {
-                    Image(systemName: "party.popper")
-                        .font(.largeTitle)
-                        .padding()
-                    Text("Welcome to Coinvert!")
-                        .font(.headline)
-                    Text("The simple currency conversion app for all your currency converting needs.")
-                        .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 300)
-                        .padding(5)
-                    Text("Swipe left to continue!")
-                        .font(.caption)
+        NavigationStack {
+            TabView {
+                Tab {
+                    VStack {
+                        Image(systemName: "party.popper")
+                            .font(.largeTitle)
+                            .padding()
+                        Text("Welcome to Coinvert!")
+                            .font(.headline)
+                        Text("The simple currency conversion app for all your currency converting needs.")
+                            .font(.subheadline)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 300)
+                            .padding(5)
+                        Text("Swipe left to continue!")
+                            .font(.caption)
+                    }
                 }
-            }
-            Tab {
-                VStack {
-                    Image("OnboardingImage1")
-                        .resizable()
-                        .scaledToFit()
-                        .cornerRadius(20)
-                        .frame(maxWidth: 300, maxHeight: 300)
-                        .padding()
-                    Text("Converting Currencies")
-                        .font(.headline)
-                    Text("Pick from any of over 200 currencies to use for conversion, including crypto!")
-                        .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 300)
-                        .padding(5)
+                Tab {
+                    VStack {
+                        Image("OnboardingImage1")
+                            .resizable()
+                            .scaledToFit()
+                            .cornerRadius(20)
+                            .frame(maxWidth: 300, maxHeight: 300)
+                            .padding()
+                        Text("Converting Currencies")
+                            .font(.headline)
+                        Text("Pick from any of over 200 currencies to use for conversion, including crypto!")
+                            .font(.subheadline)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 300)
+                            .padding(5)
+                    }
                 }
-            }
-            Tab {
-                VStack {
-                    Image("OnboardingImage2")
-                        .resizable()
-                        .scaledToFit()
-                        .cornerRadius(20)
-                        .frame(maxWidth: 300, maxHeight: 300)
-                        .padding()
-                    Text("Exchange Rates")
-                        .font(.headline)
-                    Text("Instantly see the value of a selected currency!")
-                        .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 300)
-                        .padding(5)
+                Tab {
+                    VStack {
+                        Image("OnboardingImage2")
+                            .resizable()
+                            .scaledToFit()
+                            .cornerRadius(20)
+                            .frame(maxWidth: 300, maxHeight: 300)
+                            .padding()
+                        Text("Exchange Rates")
+                            .font(.headline)
+                        Text("Instantly see the value of a selected currency!")
+                            .font(.subheadline)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 300)
+                            .padding(5)
+                    }
                 }
-            }
-            Tab {
-                VStack {
-                    Image("OnboardingImage3")
-                        .resizable()
-                        .scaledToFit()
-                        .cornerRadius(20)
-                        .frame(maxWidth: 300, maxHeight: 300)
-                        .padding()
-                    Text("Settings")
-                        .font(.headline)
-                    Text("Configure Coinvert to your liking, including setting default currencies and changing the accent colour!")
-                        .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 300)
-                        .padding(5)
+                Tab {
+                    VStack {
+                        Image("OnboardingImage3")
+                            .resizable()
+                            .scaledToFit()
+                            .cornerRadius(20)
+                            .frame(maxWidth: 300, maxHeight: 300)
+                            .padding()
+                        Text("Settings")
+                            .font(.headline)
+                        Text("Configure Coinvert to your liking, including setting default currencies and changing the accent colour!")
+                            .font(.subheadline)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 300)
+                            .padding(5)
+                    }
                 }
-            }
-            Tab {
-                VStack {
-                    Image(systemName: "checkmark.circle")
-                        .font(.largeTitle)
-                        .padding()
-                        .symbolEffect(.pulse)
-                        .foregroundStyle(.green)
-                    Text("All done!")
-                        .font(.headline)
-                    Text("Before you leave, however, you may want to change your default currencies.")
-                        .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 300)
-                        .padding(5)
-                    Form {
-                        Section {
-                            Picker("Base", selection: $defaultBaseCurrency) {
-                                ForEach(currencyList) { currency in
-                                    Text(currency.name).tag(currency.id)
+                Tab {
+                    VStack {
+                        Image(systemName: "checkmark.circle")
+                            .font(.largeTitle)
+                            .padding()
+                            .symbolEffect(.pulse)
+                            .foregroundStyle(.green)
+                        Text("All done!")
+                            .font(.headline)
+                        Text("Before you leave, however, you may want to change your default currencies.")
+                            .font(.subheadline)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 300)
+                            .padding(5)
+                        Form {
+                            if loadingCurrencies {
+                                Section {
+                                    Text("Loading currency list...")
                                 }
                             }
-                            .pickerStyle(.menu)
                             
-                            Picker("Convert To", selection: $defaultWantedCurrency) {
-                                ForEach(currencyList) { currency in
-                                    Text(currency.name).tag(currency.id)
+                            Section {
+                                Picker("Base", selection: $defaultBaseCurrency) {
+                                    ForEach(currencyList) { currency in
+                                        Text(currency.name).tag(currency.id)
+                                    }
                                 }
+                                .pickerStyle(.menu)
+                                
+                                Picker("Convert To", selection: $defaultWantedCurrency) {
+                                    ForEach(currencyList) { currency in
+                                        Text(currency.name).tag(currency.id)
+                                    }
+                                }
+                                .pickerStyle(.menu)
                             }
-                            .pickerStyle(.menu)
                         }
+                        .formStyle(.columns)
+                        .cornerRadius(20)
+                        .padding()
+                        Button {
+                            print("closing onboarding")
+                            self.onboardingShowing = false
+                        } label: {
+                            Label("Finish", systemImage: "checkmark")
+                        }
+                        .buttonStyle(.bordered)
                     }
-                    .formStyle(.columns)
-                    .cornerRadius(20)
-                    .padding()
+                }
+            }
+            .onAppear {
+                loadCurrencies()
+            }
+            .tabViewStyle(.page)
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        print("closing onboarding")
-                        self.onboardingShowing = false
+                        print("closing sheet")
+                        presentationMode.wrappedValue.dismiss()
                     } label: {
-                        Label("Finish", systemImage: "checkmark")
+                        Label("Close", systemImage: "xmark")
                     }
-                    .buttonStyle(.bordered)
                 }
             }
         }
-        .onAppear {
-            loadCurrencies()
-        }
-        .tabViewStyle(.page)
-        .indexViewStyle(.page(backgroundDisplayMode: .always))
     }
     
 }

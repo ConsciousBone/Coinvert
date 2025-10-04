@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @AppStorage("onboardingShowing") private var onboardingShowing = true
+    
     @State private var currencyList: [Currency] = []
     
     @State private var loadingCurrencies = false
@@ -129,6 +131,15 @@ struct SettingsView: View {
                                 label: {Text("Maximum Decimal Places")}
                             )
                         }
+                    }
+                }
+                
+                Section { // show onboarding
+                    Button {
+                        self.onboardingShowing = true
+                    } label: {
+                        Label("Show Onboarding", systemImage: "list.bullet")
+                            .labelStyle(.titleOnly)
                     }
                 }
             }
