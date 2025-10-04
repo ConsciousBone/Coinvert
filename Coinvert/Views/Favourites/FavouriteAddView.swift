@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct FavouriteAddView: View {
+    @Environment(\.presentationMode) var presentationMode // lets us dismiss the sheet
     @FocusState var isInputActive: Bool
     
     @Environment(\.modelContext) var modelContext
@@ -22,10 +23,17 @@ struct FavouriteAddView: View {
     @State private var baseCurrency = "" // "Base Currency", duh
     @State private var wantedCurrency = "" // "Convert To"
     
-    func addFavourite(title: String, base: String, wanted: String, displayMode: Int = 0, date: Date = .now, id: UUID = UUID()) {
-        let favouriteItem = FavouriteItem()
+    func addFavourite(title: String, base: String, wanted: String, date: Date = .now, id: UUID = UUID()) {
+        let favouriteItem = FavouriteItem( // certified moron moment, yeah lets not include the required data :/
+                title: title,
+                baseCurrency: base,
+                wantedCurrency: wanted,
+                date: date,
+                id: id
+            )
         modelContext.insert(favouriteItem)
         favouritePath = [favouriteItem]
+        print("added favourite")
     }
     
     func loadCurrencies() { // fetch list of currencies and give it to a var
@@ -63,57 +71,77 @@ struct FavouriteAddView: View {
     }
     
     var body: some View {
-        Form {
-            if loadingCurrencies {
+        NavigationStack {
+            Form {
+                if loadingCurrencies {
+                    Section {
+                        Text("Loading currency list...")
+                    }
+                }
+                
                 Section {
-                    Text("Loading currency list...")
-                }
-            }
-            
-            Section {
-                TextField("GBP to USD", text: $title)
-                    .focused($isInputActive)
-            } header: {
-                Text("Name")
-            }
-            
-            Section {
-                Picker("Base Currency", selection: $baseCurrency) { // base
-                    ForEach(currencyList) { currency in
-                        Text(currency.name).tag(currency.id)
+                    HStack {
+                        Text("Name")
+                        Spacer()
+                        TextField("GBP to USD", text: $title)
+                            .focused($isInputActive)
+                            .multilineTextAlignment(.trailing)
                     }
                 }
-                .pickerStyle(.menu)
-                Picker("Convert To", selection: $wantedCurrency) { // base
-                    ForEach(currencyList) { currency in
-                        Text(currency.name).tag(currency.id)
+                
+                Section {
+                    Picker("Base Currency", selection: $baseCurrency) { // base
+                        ForEach(currencyList) { currency in
+                            Text(currency.name).tag(currency.id)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    Picker("Convert To", selection: $wantedCurrency) { // base
+                        ForEach(currencyList) { currency in
+                            Text(currency.name).tag(currency.id)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                } header: {
+                    Text("Currencies")
+                }
+                
+                Section {
+                    Button {
+                        print("saving favourite")
+                        addFavourite(
+                            title: title,
+                            base: baseCurrency,
+                            wanted: wantedCurrency
+                        )
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Text("Add Favourite")
+                    }
+                    .disabled(title.isEmpty)
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        print("closing sheet")
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Label("Close", systemImage: "xmark")
                     }
                 }
-                .pickerStyle(.menu)
-            } header: {
-                Text("Currencies")
-            }
-            
-            Section {
-                Button {
-                    print("saving favourite")
-                } label: {
-                    Text("Add Favourite")
+                ToolbarItem(placement: .keyboard) { // dismiss button, idfk how to do it better so deal with it
+                    Button {
+                        isInputActive = false
+                    } label: {
+                        Label("Done", systemImage: "checkmark")
+                    }
+                    .padding()
                 }
             }
-        }
-        .toolbar {
-            ToolbarItem(placement: .keyboard) { // dismiss button, idfk how to do it better so deal with it
-                Button {
-                    isInputActive = false
-                } label: {
-                    Label("Done", systemImage: "checkmark")
-                }
-                .padding()
+            .onAppear {
+                loadCurrencies()
             }
-        }
-        .onAppear {
-            loadCurrencies()
         }
     }
 }

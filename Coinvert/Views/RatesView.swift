@@ -55,7 +55,7 @@ struct RatesView: View {
                     }
                 }
             }
-            .navigationTitle("Values")
+            .navigationTitle("Rates")
             .navigationBarTitleDisplayMode(.inline)
             .pickerStyle(.menu)
             

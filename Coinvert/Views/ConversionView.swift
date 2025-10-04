@@ -199,7 +199,11 @@ struct ConversionView: View {
                 }
             }
             .sheet(isPresented: $showingFavouritesSheet) {
-                FavouritesView(mode: .constant(0))
+                FavouritesView(
+                    mode: 0,
+                    conversionBaseCurrency: $baseCurrency,
+                    conversionWantedCurrency: $wantedCurrency
+                )
                     .presentationDetents([.medium])
             }
             .navigationTitle("Conversion")

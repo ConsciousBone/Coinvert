@@ -14,39 +14,82 @@ struct FavouritesView: View {
     
     @Query(sort: \FavouriteItem.date, order: .reverse) var favouriteItems: [FavouriteItem]
     
-    @Binding var mode: Int // 0 is base + wanted, 1 is base, 2 is wanted
+    @State var showingAddFavouriteSheet = false
+    
+    let mode: Int // 0 is base + wanted, 1 is base, 2 is wanted, not used atm
+    @Binding var conversionBaseCurrency: String
+    @Binding var conversionWantedCurrency: String
     var body: some View {
         NavigationStack {
-            Form {
-                Section {
-                    FavouriteRowItemView(
-                        title: .constant("USD to GBP"),
-                        baseCurrency: .constant("usd"),
-                        wantedCurrency: .constant("gbp")
-                    )
+            if favouriteItems.count == 0 {
+                ContentUnavailableView {
+                    Label("No favourites", systemImage: "star")
+                } description: {
+                    Text("You don't have any favourites yet.")
+                } actions: {
+                    Button("Add Favourite") {
+                        print("opening favouritesview")
+                        showingAddFavouriteSheet.toggle()
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        print("closing sheet")
-                        presentationMode.wrappedValue.dismiss()
-                    } label: {
-                        Label("Close", systemImage: "xmark")
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            print("closing sheet")
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
+                            Label("Close", systemImage: "xmark")
+                        }
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        print("opening new favourite view")
-                    } label: {
-                        Label("New Favourite", systemImage: "plus")
+            } else {
+                Form {
+                    ForEach(favouriteItems) { item in
+                        Section {
+                            Button {
+                                print("favourite clicked: name is \(item.title)")
+                            } label: {
+                                FavouriteRowItemView(
+                                    title: item.title,
+                                    baseCurrency: item.baseCurrency,
+                                    wantedCurrency: item.wantedCurrency
+                                )
+                            }
+                        }
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            print("closing sheet")
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
+                            Label("Close", systemImage: "xmark")
+                        }
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            print("opening favouritesview")
+                            showingAddFavouriteSheet.toggle()
+                        } label: {
+                            Label("New Favourite", systemImage: "plus")
+                        }
                     }
                 }
             }
+        }
+        .sheet(isPresented: $showingAddFavouriteSheet) {
+            FavouriteAddView()
+                .presentationDetents([.medium])
         }
     }
 }
 
 #Preview {
-    FavouritesView(mode: .constant(0))
+    FavouritesView(
+        mode: 0,
+        conversionBaseCurrency: .constant("usd"),
+        conversionWantedCurrency: .constant("gbp")
+    )
 }

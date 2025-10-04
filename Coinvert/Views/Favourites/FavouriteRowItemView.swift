@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct FavouriteRowItemView: View {
-    @Binding var title: String
-    @Binding var baseCurrency: String
-    @Binding var wantedCurrency: String
+    let title: String
+    let baseCurrency: String
+    let wantedCurrency: String
     
     var body: some View {
         HStack {
@@ -29,8 +29,8 @@ struct FavouriteRowItemView: View {
 
 #Preview {
     FavouriteRowItemView(
-        title: .constant("USD to GBP"), // example data
-        baseCurrency: .constant("usd"), // example data
-        wantedCurrency: .constant("gbp") // example data
+        title: "USD to GBP", // example data
+        baseCurrency: "usd", // example data
+        wantedCurrency: "gbp" // example data
     )
 }

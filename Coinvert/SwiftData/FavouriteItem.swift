@@ -10,15 +10,15 @@ import SwiftData
 
 @Model class FavouriteItem {
     var title: String = "" // name of fav
-    var base: String = "" // base currency obviously, currencyCode format
-    var wanted: String = "" // convert to, currencyCode format
+    var baseCurrency: String = "" // base currency obviously, currencyCode format
+    var wantedCurrency: String = "" // convert to, currencyCode format
     var date: Date // for sorting purposes
     var id = UUID() // good practice i guess??
     
-    init(title: String = "", base: String = "", wanted: String = "", date: Date = .now, id: UUID = UUID()) {
+    init(title: String = "", baseCurrency: String = "", wantedCurrency: String = "", date: Date = .now, id: UUID = UUID()) {
         self.title = title
-        self.base = base
-        self.wanted = wanted
+        self.baseCurrency = baseCurrency
+        self.wantedCurrency = wantedCurrency
         self.date = date
         self.id = id
     }
