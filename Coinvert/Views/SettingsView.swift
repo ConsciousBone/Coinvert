@@ -32,6 +32,9 @@ struct SettingsView: View {
         String(localized: "White"),   String(localized: "Black")
     ]
     
+    @AppStorage("precisionMode") private var precisionMode = false
+    @AppStorage("decimalPlaces") private var decimalPlaces = 2
+    
     func loadCurrencies() { // fetch list of currencies and give it to a var
         withAnimation { // fancy animation maybe?
             loadingCurrencies = true // show loading banner

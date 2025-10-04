@@ -16,9 +16,35 @@ struct FavouritesView: View {
     
     @State var showingAddFavouriteSheet = false
     
+    @State private var loadingCurrencies = false
+    @State private var currencyList: [Currency] = []
+    
     let mode: Int // 0 is base + wanted, 1 is base, 2 is wanted, not used atm
     @Binding var conversionBaseCurrency: String
     @Binding var conversionWantedCurrency: String
+    
+    func loadCurrencies() { // fetch list of currencies and give it to a var
+        withAnimation { // fancy animation maybe?
+            loadingCurrencies = true // show loading banner
+        }
+        print("loading currencies")
+        
+        currencyList = [] // clear out any existing currencies
+        
+        getCurrencyList { list in
+            DispatchQueue.main.async {
+                self.currencyList = list
+                
+                // this is here cos the async shit finishes after
+                // the loadCurrencies() func does
+                withAnimation {
+                    loadingCurrencies = false // hide the loading banner
+                }
+                print("finished loading currencies")
+            }
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             if favouriteItems.count == 0 {
@@ -31,7 +57,7 @@ struct FavouritesView: View {
                         print("opening favouritesview")
                         showingAddFavouriteSheet.toggle()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -49,16 +75,25 @@ struct FavouritesView: View {
                         Section {
                             Button {
                                 print("favourite clicked: name is \(item.title)")
+                                conversionBaseCurrency = item.baseCurrency
+                                conversionWantedCurrency = item.wantedCurrency
+                                presentationMode.wrappedValue.dismiss()
                             } label: {
                                 FavouriteRowItemView(
                                     title: item.title,
-                                    baseCurrency: item.baseCurrency,
-                                    wantedCurrency: item.wantedCurrency
+                                    baseCurrency: currencyList.first(where: { $0.id == item.baseCurrency })?.name ?? "Unknown",
+                                    wantedCurrency: currencyList.first(where: { $0.id == item.wantedCurrency })?.name ?? "Unknown"
                                 )
                             }
                         }
                     }
+                    .onDelete { indexSet in
+                        withAnimation {
+                            indexSet.map{favouriteItems[$0]}.forEach(modelContext.delete)
+                        }
+                    }
                 }
+                .tint(.primary)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
@@ -78,6 +113,9 @@ struct FavouritesView: View {
                     }
                 }
             }
+        }
+        .onAppear {
+            loadCurrencies()
         }
         .sheet(isPresented: $showingAddFavouriteSheet) {
             FavouriteAddView()
