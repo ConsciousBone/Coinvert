@@ -9,21 +9,34 @@ import SwiftUI
 import SwiftData
 
 struct FavouritesView: View {
+    @Environment(\.presentationMode) var presentationMode // lets us dismiss the sheet
     @Environment(\.modelContext) var modelContext
     
-    @Query(sort: \modelContext.date, order: .reverse) var favouriteItems: [FavouriteItem]
+    @Query(sort: \FavouriteItem.date, order: .reverse) var favouriteItems: [FavouriteItem]
     
     @Binding var mode: Int // 0 is base + wanted, 1 is base, 2 is wanted
     var body: some View {
         NavigationStack {
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    print("opening new favourite view")
-                } label: {
-                    Label("New Favourite", systemImage: "plus")
+            Form {
+                Section {
+                    Text("testing!")
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        print("closing sheet")
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Label("Close", systemImage: "xmark")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        print("opening new favourite view")
+                    } label: {
+                        Label("New Favourite", systemImage: "plus")
+                    }
                 }
             }
         }
